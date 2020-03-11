@@ -30,6 +30,7 @@ export default function parsePatch(patch) {
                 file.source = line.substring(4);
             } else {
                 file.source = null;
+                file.type = 'added';
             }
         }
 
@@ -40,6 +41,7 @@ export default function parsePatch(patch) {
                 file.target = line.substring(4);
             } else {
                 file.target = null;
+                file.type = 'removed';
             }
         }
 
@@ -68,8 +70,8 @@ export default function parsePatch(patch) {
                     lines: [],
                 };
 
-                sourceLine = sourceFromLine - 1;
-                targetLine = targetFromLine - 1;
+                sourceLine = Math.max(sourceFromLine - 1, 0);
+                targetLine = Math.max(targetFromLine - 1, 0);
                 headerType = 5;
             }
         }
