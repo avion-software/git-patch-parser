@@ -32,10 +32,18 @@ export default function parsePatch(patch) {
                 let match = line.match(INDEX_REGEX);
 
                 if (match) {
-                    const [, beforeIndex, afterIndex, mode] = match;
+                    const [, beforeIndex, afterIndex, modeString] = match;
+
                     file.meta.index = file.meta.index || {};
                     file.meta.index.before = beforeIndex;
                     file.meta.index.after = afterIndex;
+
+                    const fileMode = parseInt(modeString, 10);
+                    if (!Number.isNaN(fileMode)) {
+                        file.meta.mode = file.meta.mode || {};
+                        file.meta.mode.before = file.meta.mode.before || fileMode;
+                        file.meta.mode.after = file.meta.mode.after || fileMode;
+                    }
                 }
 
                 headerType = 2;
