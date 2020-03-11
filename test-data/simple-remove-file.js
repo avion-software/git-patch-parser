@@ -1,7 +1,7 @@
 export default {
     files: [{
-        source: 'a/test.txt',
-        target: null,
+        before: 'a/test.txt',
+        after: null,
         type: 'removed',
         meta: {
             mode: {
@@ -13,43 +13,43 @@ export default {
             }
         },
         hunks: [{
-            source: {
+            before: {
                 from: 1,
                 to: 5,
             },
-            target: {
+            after: {
                 from: 0,
                 to: 0,
             },
             lines: [{
                 type: 'removed',
                 line: {
-                    source: 1,
-                    target: 0,
+                    before: 1,
+                    after: 0,
                 }
             }, {
                 type: 'removed',
                 line: {
-                    source: 2,
-                    target: 0,
+                    before: 2,
+                    after: 0,
                 }
             }, {
                 type: 'removed',
                 line: {
-                    source: 3,
-                    target: 0,
+                    before: 3,
+                    after: 0,
                 }
             }, {
                 type: 'removed',
                 line: {
-                    source: 4,
-                    target: 0,
+                    before: 4,
+                    after: 0,
                 }
             }, {
                 type: 'removed',
                 line: {
-                    source: 5,
-                    target: 0,
+                    before: 5,
+                    after: 0,
                 }
             }]
         }]
