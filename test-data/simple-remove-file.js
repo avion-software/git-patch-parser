@@ -3,6 +3,11 @@ export default {
         source: 'a/test.txt',
         target: null,
         type: 'removed',
+        meta: {
+            mode: {
+                before: 100644,
+            },
+        },
         hunks: [{
             source: {
                 from: 1,
