@@ -7,6 +7,10 @@ export default {
                 before: '4ce0f7a',
                 after: 'c09745f',
             },
+            mode: {
+                before: 100644,
+                after: 100644,
+            },
         },
         hunks: [{
             source: {
