@@ -1,4 +1,5 @@
 const HUNK_REGEX = /@@ -([0-9])*,([0-9])* \+([0-9])*,([0-9])* @@/;
+const INDEX_REGEX = /index ([a-zA-Z0-9]*)\.\.([a-zA-Z0-9]*)[ ]?([0-9]*)/;
 
 export default function parsePatch(patch) {
     const lines = patch.split('\n');
@@ -15,18 +16,28 @@ export default function parsePatch(patch) {
                 files.push(file);
             }
 
-            file = {};
+            file = {
+                meta: {},
+            };
             headerType = 1;
         }
 
         if (headerType === 1) {
             if (line.startsWith('deleted file mode ')) {
-                file.meta = file.meta || {};
                 file.meta.mode = file.meta.mode || {};
                 file.meta.mode.before = parseInt(line.substring(18), 10);
             }
 
             if (line.startsWith('index ')) {
+                let match = line.match(INDEX_REGEX);
+
+                if (match) {
+                    const [, beforeIndex, afterIndex, mode] = match;
+                    file.meta.index = file.meta.index || {};
+                    file.meta.index.before = beforeIndex;
+                    file.meta.index.after = afterIndex;
+                }
+
                 headerType = 2;
             }
         }
