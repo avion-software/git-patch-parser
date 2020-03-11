@@ -8,8 +8,8 @@ export default function parsePatch(patch) {
     let hunk = null;
     let file = null;
     let headerType = 0;
-    let sourceLine;
-    let targetLine;
+    let beforeLine;
+    let afterLine;
     lines.forEach((line) => {
         if (line.startsWith('diff --git ')) {
             if (file) {
@@ -54,9 +54,9 @@ export default function parsePatch(patch) {
             headerType = 3;
 
             if (line.substring(4) !== '/dev/null') {
-                file.source = line.substring(4);
+                file.before = line.substring(4);
             } else {
-                file.source = null;
+                file.before = null;
                 file.type = 'added';
             }
         }
@@ -65,9 +65,9 @@ export default function parsePatch(patch) {
             headerType = 4;
 
             if (line.substring(4) !== '/dev/null') {
-                file.target = line.substring(4);
+                file.after = line.substring(4);
             } else {
-                file.target = null;
+                file.after = null;
                 file.type = 'removed';
             }
         }
@@ -80,59 +80,59 @@ export default function parsePatch(patch) {
                     file.hunks.push(hunk);
                 }
 
-                const sourceFromLine = parseInt(match[1], 10);
-                const sourceToLine = parseInt(match[2], 10);
-                const targetFromLine = parseInt(match[3], 10);
-                const targetToLine = parseInt(match[4], 10);
+                const beforeFromLine = parseInt(match[1], 10);
+                const beforeToLine = parseInt(match[2], 10);
+                const afterFromLine = parseInt(match[3], 10);
+                const afterToLine = parseInt(match[4], 10);
 
                 hunk = {
-                    source: {
-                        from: sourceFromLine,
-                        to: sourceToLine,
+                    before: {
+                        from: beforeFromLine,
+                        to: beforeToLine,
                     },
-                    target: {
-                        from: targetFromLine,
-                        to: targetToLine,
+                    after: {
+                        from: afterFromLine,
+                        to: afterToLine,
                     },
                     lines: [],
                 };
 
-                sourceLine = Math.max(sourceFromLine - 1, 0);
-                targetLine = Math.max(targetFromLine - 1, 0);
+                beforeLine = Math.max(beforeFromLine - 1, 0);
+                afterLine = Math.max(afterFromLine - 1, 0);
                 headerType = 5;
             }
         }
 
         if (headerType === 5) {
             if (line.startsWith(' ')) {
-                sourceLine += 1;
-                targetLine += 1;
+                beforeLine += 1;
+                afterLine += 1;
 
                 hunk.lines.push({
                     type: 'normal',
                     line: {
-                        source: sourceLine,
-                        target: targetLine,
+                        before: beforeLine,
+                        after: afterLine,
                     },
                 });
             } else if (line.startsWith('+')) {
-                targetLine += 1;
+                afterLine += 1;
 
                 hunk.lines.push({
                     type: 'added',
                     line: {
-                        source: sourceLine,
-                        target: targetLine,
+                        before: beforeLine,
+                        after: afterLine,
                     },
                 });
             } else if (line.startsWith('-')) {
-                sourceLine += 1;
+                beforeLine += 1;
 
                 hunk.lines.push({
                     type: 'removed',
                     line: {
-                        source: sourceLine,
-                        target: targetLine,
+                        before: beforeLine,
+                        after: afterLine,
                     },
                 });
             }
