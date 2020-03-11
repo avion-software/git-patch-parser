@@ -19,8 +19,16 @@ export default function parsePatch(patch) {
             headerType = 1;
         }
 
-        if (headerType === 1 && line.startsWith('index ')) {
-            headerType = 2;
+        if (headerType === 1) {
+            if (line.startsWith('deleted file mode ')) {
+                file.meta = file.meta || {};
+                file.meta.mode = file.meta.mode || {};
+                file.meta.mode.before = parseInt(line.substring(18), 10);
+            }
+
+            if (line.startsWith('index ')) {
+                headerType = 2;
+            }
         }
 
         if (headerType === 2 && line.startsWith('--- ')) {
