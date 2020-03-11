@@ -37,7 +37,7 @@ export default {
                     target: 0,
                 }
             }, {
-                type: 'normal',
+                type: 'removed',
                 line: {
                     source: 5,
                     target: 0,
