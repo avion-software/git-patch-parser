@@ -7,6 +7,10 @@ export default {
             mode: {
                 before: 100644,
             },
+            index: {
+                before: '593fd3c',
+                after: '0000000',
+            }
         },
         hunks: [{
             source: {
