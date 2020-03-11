@@ -2,6 +2,12 @@ export default {
     files: [{
         source: 'a/test.txt',
         target: 'b/test.txt',
+        meta: {
+            index: {
+                before: '4ce0f7a',
+                after: 'c3b9bc0',
+            },
+        },
         hunks: [{
             source: {
                 from: 1,

@@ -1,4 +1,5 @@
 const HUNK_REGEX = /@@ -([0-9])*,([0-9])* \+([0-9])*,([0-9])* @@/;
+const INDEX_REGEX = /index ([a-zA-Z0-9]*)\.\.([a-zA-Z0-9]*)[ ]?([0-9]*)/;
 
 export default function parsePatch(patch) {
     const lines = patch.split('\n');
@@ -15,12 +16,30 @@ export default function parsePatch(patch) {
                 files.push(file);
             }
 
-            file = {};
+            file = {
+                meta: {},
+            };
             headerType = 1;
         }
 
-        if (headerType === 1 && line.startsWith('index ')) {
-            headerType = 2;
+        if (headerType === 1) {
+            if (line.startsWith('deleted file mode ')) {
+                file.meta.mode = file.meta.mode || {};
+                file.meta.mode.before = parseInt(line.substring(18), 10);
+            }
+
+            if (line.startsWith('index ')) {
+                let match = line.match(INDEX_REGEX);
+
+                if (match) {
+                    const [, beforeIndex, afterIndex, mode] = match;
+                    file.meta.index = file.meta.index || {};
+                    file.meta.index.before = beforeIndex;
+                    file.meta.index.after = afterIndex;
+                }
+
+                headerType = 2;
+            }
         }
 
         if (headerType === 2 && line.startsWith('--- ')) {
@@ -30,6 +49,7 @@ export default function parsePatch(patch) {
                 file.source = line.substring(4);
             } else {
                 file.source = null;
+                file.type = 'added';
             }
         }
 
@@ -40,6 +60,7 @@ export default function parsePatch(patch) {
                 file.target = line.substring(4);
             } else {
                 file.target = null;
+                file.type = 'removed';
             }
         }
 
@@ -68,8 +89,8 @@ export default function parsePatch(patch) {
                     lines: [],
                 };
 
-                sourceLine = sourceFromLine - 1;
-                targetLine = targetFromLine - 1;
+                sourceLine = Math.max(sourceFromLine - 1, 0);
+                targetLine = Math.max(targetFromLine - 1, 0);
                 headerType = 5;
             }
         }
