@@ -9,7 +9,7 @@ function addFileToArray(files, file, diffLine) {
 
         if ((mainPart.indexOf('a/') === mainPart.lastIndexOf('a/')
             && mainPart.indexOf('b/') === mainPart.lastIndexOf('b/'))
-            || mainPart.test(DIFF_COMPLEX_REGEX)) {
+            || DIFF_COMPLEX_REGEX.test(mainPart)) {
             const match = mainPart.match(DIFF_REGEX);
             if (match) {
                 const [, before, after] = match;
