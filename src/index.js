@@ -28,6 +28,20 @@ export default function parsePatch(patch) {
                 file.meta.mode.before = parseInt(line.substring(18), 10);
             }
 
+            if (line.startsWith('similarity index ')) {
+                file.meta.similarity = parseInt(line.substring(17), 10);
+            }
+
+            if (line.startsWith('rename from ')) {
+                file.before = file.before || line.substring(12);
+                file.type = 'renamed';
+            }
+
+            if (line.startsWith('rename to ')) {
+                file.after = file.after || line.substring(10);
+                file.type = 'renamed';
+            }
+
             if (line.startsWith('index ')) {
                 let match = line.match(INDEX_REGEX);
 
