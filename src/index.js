@@ -42,6 +42,16 @@ export default function parsePatch(patch) {
                 file.type = 'renamed';
             }
 
+            if (line.startsWith('old mode ')) {
+                file.meta.mode = file.meta.mode || {};
+                file.meta.mode.before = file.meta.mode.before || parseInt(line.substring(9), 10);
+            }
+
+            if (line.startsWith('new mode ')) {
+                file.meta.mode = file.meta.mode || {};
+                file.meta.mode.after = file.meta.mode.after || parseInt(line.substring(9), 10);
+            }
+
             if (line.startsWith('index ')) {
                 let match = line.match(INDEX_REGEX);
 
