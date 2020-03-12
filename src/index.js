@@ -1,5 +1,27 @@
 const HUNK_REGEX = /@@ -([0-9])*,([0-9])* \+([0-9])*,([0-9])* @@/;
 const INDEX_REGEX = /index ([a-zA-Z0-9]*)\.\.([a-zA-Z0-9]*)[ ]?([0-9]*)/;
+const DIFF_REGEX = /("a\/.*"|a\/.*)\s("b\/.*"|b\/.*)$/;
+const DIFF_COMPLEX_REGEX = /"(a\/.*)" "(b\/.*)"/;
+
+function addFileToArray(files, file, diffLine) {
+    if (!file.before && !file.after) {
+        const mainPart = diffLine.substring(11);
+
+        if ((mainPart.indexOf('a/') === mainPart.lastIndexOf('a/')
+            && mainPart.indexOf('b/') === mainPart.lastIndexOf('b/'))
+            || mainPart.test(DIFF_COMPLEX_REGEX)) {
+            const match = mainPart.match(DIFF_REGEX);
+            if (match) {
+                const [, before, after] = match;
+
+                file.before = before;
+                file.after = after;
+            }
+        }
+    }
+
+    files.push(file);
+}
 
 export default function parsePatch(patch) {
     const lines = patch.split('\n');
@@ -10,12 +32,14 @@ export default function parsePatch(patch) {
     let headerType = 0;
     let beforeLine;
     let afterLine;
+    let diffLine = null;
     lines.forEach((line) => {
         if (line.startsWith('diff --git ')) {
             if (file) {
-                files.push(file);
+                addFileToArray(files, file, diffLine);
             }
 
+            diffLine = line;
             file = {
                 meta: {},
             };
@@ -169,7 +193,7 @@ export default function parsePatch(patch) {
     }
 
     if (file) {
-        files.push(file);
+        addFileToArray(files, file, diffLine);
     }
 
     return {
