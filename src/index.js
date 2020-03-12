@@ -17,6 +17,25 @@ function addFileToArray(files, file, diffLine) {
                 file.before = before;
                 file.after = after;
             }
+        } else if (file.type !== 'renamed') {
+            const mainParts = mainPart.split(' ');
+
+            const partLength = mainParts.length / 2;
+            if (partLength % 2 === 0) {
+                let before = [];
+                let after = [];
+
+                for (let i = 0; i < mainParts.length; i += 1) {
+                    if (i < partLength) {
+                        before.push(mainParts[i]);
+                    } else {
+                        after.push(mainParts[i]);
+                    }
+                }
+
+                file.before = before.join(' ');
+                file.after = after.join(' ');
+            }
         }
     }
 
