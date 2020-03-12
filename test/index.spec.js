@@ -8,6 +8,7 @@ import simpleAddLine from '../test-data/simple-add-line';
 import simpleRemoveLine from '../test-data/simple-remove-line';
 import simpleRemoveFile from '../test-data/simple-remove-file';
 import simpleMoveFile from '../test-data/simple-move-file';
+import simpleModeFile from '../test-data/simple-mode-file';
 
 describe('lines', () => {
     it('change-line', async () => {
@@ -38,5 +39,11 @@ describe('lines', () => {
         const buffer = await fs.readFile(path.resolve(__dirname, '..', 'test-data', 'simple-move-file.patch'));
 
         assert.deepEqual(parsePatch(buffer.toString()), simpleMoveFile);
+    });
+
+    it('mode-file', async () => {
+        const buffer = await fs.readFile(path.resolve(__dirname, '..', 'test-data', 'simple-mode-file.patch'));
+
+        assert.deepEqual(parsePatch(buffer.toString()), simpleModeFile);
     });
 });
