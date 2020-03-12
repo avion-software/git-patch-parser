@@ -1,5 +1,46 @@
 const HUNK_REGEX = /@@ -([0-9])*,([0-9])* \+([0-9])*,([0-9])* @@/;
 const INDEX_REGEX = /index ([a-zA-Z0-9]*)\.\.([a-zA-Z0-9]*)[ ]?([0-9]*)/;
+const DIFF_REGEX = /("a\/.*"|a\/.*)\s("b\/.*"|b\/.*)$/;
+const DIFF_COMPLEX_REGEX = /"(a\/.*)" "(b\/.*)"/;
+
+function addFileToArray(files, file, diffLine) {
+    if (!file.before && !file.after) {
+        const mainPart = diffLine.substring(11);
+
+        if ((mainPart.indexOf('a/') === mainPart.lastIndexOf('a/')
+            && mainPart.indexOf('b/') === mainPart.lastIndexOf('b/'))
+            || DIFF_COMPLEX_REGEX.test(mainPart)) {
+            const match = mainPart.match(DIFF_REGEX);
+            if (match) {
+                const [, before, after] = match;
+
+                file.before = before;
+                file.after = after;
+            }
+        } else if (file.type !== 'renamed') {
+            const mainParts = mainPart.split(' ');
+
+            const partLength = mainParts.length / 2;
+            if (partLength % 2 === 0) {
+                let before = [];
+                let after = [];
+
+                for (let i = 0; i < mainParts.length; i += 1) {
+                    if (i < partLength) {
+                        before.push(mainParts[i]);
+                    } else {
+                        after.push(mainParts[i]);
+                    }
+                }
+
+                file.before = before.join(' ');
+                file.after = after.join(' ');
+            }
+        }
+    }
+
+    files.push(file);
+}
 
 export default function parsePatch(patch) {
     const lines = patch.split('\n');
@@ -10,12 +51,14 @@ export default function parsePatch(patch) {
     let headerType = 0;
     let beforeLine;
     let afterLine;
+    let diffLine = null;
     lines.forEach((line) => {
         if (line.startsWith('diff --git ')) {
             if (file) {
-                files.push(file);
+                addFileToArray(files, file, diffLine);
             }
 
+            diffLine = line;
             file = {
                 meta: {},
             };
@@ -40,6 +83,16 @@ export default function parsePatch(patch) {
             if (line.startsWith('rename to ')) {
                 file.after = file.after || line.substring(10);
                 file.type = 'renamed';
+            }
+
+            if (line.startsWith('old mode ')) {
+                file.meta.mode = file.meta.mode || {};
+                file.meta.mode.before = file.meta.mode.before || parseInt(line.substring(9), 10);
+            }
+
+            if (line.startsWith('new mode ')) {
+                file.meta.mode = file.meta.mode || {};
+                file.meta.mode.after = file.meta.mode.after || parseInt(line.substring(9), 10);
             }
 
             if (line.startsWith('index ')) {
@@ -159,7 +212,7 @@ export default function parsePatch(patch) {
     }
 
     if (file) {
-        files.push(file);
+        addFileToArray(files, file, diffLine);
     }
 
     return {
