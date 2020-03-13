@@ -5,7 +5,7 @@ const DIFF_COMPLEX_REGEX = /"(a\/.*)" "(b\/.*)"/;
 
 function addFileToArray(files, file, diffLine) {
     if (!file.before && !file.after) {
-        const mainPart = diffLine.substring(11);
+        const mainPart = diffLine.substring(11).trim();
 
         if ((mainPart.indexOf('a/') === mainPart.lastIndexOf('a/')
             && mainPart.indexOf('b/') === mainPart.lastIndexOf('b/'))
@@ -76,12 +76,12 @@ export default function parsePatch(patch) {
             }
 
             if (line.startsWith('rename from ')) {
-                file.before = file.before || line.substring(12);
+                file.before = file.before || line.substring(12).trim();
                 file.type = 'renamed';
             }
 
             if (line.startsWith('rename to ')) {
-                file.after = file.after || line.substring(10);
+                file.after = file.after || line.substring(10).trim();
                 file.type = 'renamed';
             }
 
@@ -125,8 +125,8 @@ export default function parsePatch(patch) {
         if (headerType === 2 && line.startsWith('--- ')) {
             headerType = 3;
 
-            if (line.substring(4) !== '/dev/null') {
-                file.before = line.substring(4);
+            if (line.substring(4).trim() !== '/dev/null') {
+                file.before = line.substring(4).trim();
             } else {
                 file.before = null;
                 file.type = 'added';
@@ -136,8 +136,8 @@ export default function parsePatch(patch) {
         if (headerType === 3 && line.startsWith('+++ ')) {
             headerType = 4;
 
-            if (line.substring(4) !== '/dev/null') {
-                file.after = line.substring(4);
+            if (line.substring(4).trim() !== '/dev/null') {
+                file.after = line.substring(4).trim();
             } else {
                 file.after = null;
                 file.type = 'removed';
