@@ -95,6 +95,11 @@ export default function parsePatch(patch) {
                 file.meta.mode.after = file.meta.mode.after || parseInt(line.substring(9), 10);
             }
 
+            if (line.startsWith('new file mode ')) {
+                file.meta.mode = file.meta.mode || {};
+                file.meta.mode.after = file.meta.mode.after || parseInt(line.substring(14), 10);
+            }
+
             if (line.startsWith('index ')) {
                 let match = line.match(INDEX_REGEX);
 
