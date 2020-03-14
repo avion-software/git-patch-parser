@@ -14,8 +14,8 @@ function addFileToArray(files, file, diffLine) {
             if (match) {
                 const [, before, after] = match;
 
-                file.before = before;
-                file.after = after;
+                file.before = before.substring(2);
+                file.after = after.substring(2);
             }
         } else if (file.type !== 'renamed') {
             const mainParts = mainPart.split(' ');
@@ -33,8 +33,8 @@ function addFileToArray(files, file, diffLine) {
                     }
                 }
 
-                file.before = before.join(' ');
-                file.after = after.join(' ');
+                file.before = before.join(' ').substring(2);
+                file.after = after.join(' ').substring(2);
             }
         }
     }
@@ -126,7 +126,7 @@ export default function parsePatch(patch) {
             headerType = 3;
 
             if (line.substring(4).trim() !== '/dev/null') {
-                file.before = line.substring(4).trim();
+                file.before = line.substring(4 + 2).trim();
             } else {
                 file.before = null;
                 file.type = 'added';
@@ -137,7 +137,7 @@ export default function parsePatch(patch) {
             headerType = 4;
 
             if (line.substring(4).trim() !== '/dev/null') {
-                file.after = line.substring(4).trim();
+                file.after = line.substring(4 + 2).trim();
             } else {
                 file.after = null;
                 file.type = 'removed';
