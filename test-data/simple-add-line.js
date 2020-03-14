@@ -1,7 +1,7 @@
 export default {
     files: [{
-        before: 'a/test.txt',
-        after: 'b/test.txt',
+        before: 'test.txt',
+        after: 'test.txt',
         meta: {
             index: {
                 before: '4ce0f7a',

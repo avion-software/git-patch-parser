@@ -1,7 +1,7 @@
 export default {
     files: [{
-        before: 'a/test a/test.txt',
-        after: 'b/test a/test.txt',
+        before: 'test a/test.txt',
+        after: 'test a/test.txt',
         meta: {
             mode: {
                 before: 100644,

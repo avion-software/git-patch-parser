@@ -1,6 +1,6 @@
 export default {
     files: [{
-        before: 'a/test.txt',
+        before: 'test.txt',
         after: null,
         type: 'removed',
         meta: {

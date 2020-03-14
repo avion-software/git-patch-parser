@@ -1,7 +1,7 @@
 export default {
     files: [{
         before: null,
-        after: 'b/test.txt',
+        after: 'test.txt',
         type: 'added',
         meta: {
             index: {
