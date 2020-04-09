@@ -1,4 +1,4 @@
-const HUNK_REGEX = /@@ -([0-9])*,([0-9])* \+([0-9])*,([0-9])* @@/;
+const HUNK_REGEX = /@@ -([0-9])*(?:,([0-9])*)? \+(?:([0-9])*,)?([0-9])* @@/;
 const INDEX_REGEX = /index ([a-zA-Z0-9]*)\.\.([a-zA-Z0-9]*)[ ]?([0-9]*)/;
 const DIFF_REGEX = /("a\/.*"|a\/.*)\s("b\/.*"|b\/.*)$/;
 const DIFF_COMPLEX_REGEX = /"(a\/.*)" "(b\/.*)"/;
@@ -153,8 +153,8 @@ export default function parsePatch(patch) {
                 }
 
                 const beforeFromLine = parseInt(match[1], 10);
-                const beforeToLine = parseInt(match[2], 10);
-                const afterFromLine = parseInt(match[3], 10);
+                const beforeToLine = parseInt(match[2] || match[1], 10);
+                const afterFromLine = parseInt(match[3] || match[4], 10);
                 const afterToLine = parseInt(match[4], 10);
 
                 hunk = {
