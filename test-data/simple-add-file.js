@@ -26,31 +26,36 @@ export default {
                 line: {
                     before: 0,
                     after: 1,
-                }
+                },
+                content: 'Line1',
             }, {
                 type: 'added',
                 line: {
                     before: 0,
                     after: 2,
-                }
+                },
+                content: 'Line2',
             }, {
                 type: 'added',
                 line: {
                     before: 0,
                     after: 3,
-                }
+                },
+                content: 'Line3',
             }, {
                 type: 'added',
                 line: {
                     before: 0,
                     after: 4,
-                }
+                },
+                content: 'Line4',
             }, {
                 type: 'added',
                 line: {
                     before: 0,
                     after: 5,
-                }
+                },
+                content: 'Line5',
             }]
         }]
     }],

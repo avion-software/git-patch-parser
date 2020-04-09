@@ -26,19 +26,22 @@ export default {
                 line: {
                     before: 1,
                     after: 0,
-                }
+                },
+                content: 'Test4',
             }, {
                 type: 'added',
                 line: {
                     before: 1,
                     after: 1,
-                }
+                },
+                content: 'Test4',
             }, {
                 type: 'added',
                 line: {
                     before: 1,
                     after: 2,
-                }
+                },
+                content: 'Test5',
             }]
         }]
     }],
