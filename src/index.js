@@ -186,6 +186,7 @@ export default function parsePatch(patch) {
                         before: beforeLine,
                         after: afterLine,
                     },
+                    content: line.substring(1),
                 });
             } else if (line.startsWith('+')) {
                 afterLine += 1;
@@ -196,6 +197,7 @@ export default function parsePatch(patch) {
                         before: beforeLine,
                         after: afterLine,
                     },
+                    content: line.substring(1),
                 });
             } else if (line.startsWith('-')) {
                 beforeLine += 1;
@@ -206,6 +208,7 @@ export default function parsePatch(patch) {
                         before: beforeLine,
                         after: afterLine,
                     },
+                    content: line.substring(1),
                 });
             }
         }
