@@ -11,6 +11,7 @@ import simpleMoveFile from '../test-data/simple-move-file';
 import simpleModeFile from '../test-data/simple-mode-file';
 import complexModeFile from '../test-data/complex-mode-file';
 import simpleAddFile from '../test-data/simple-add-file';
+import simpleModifyFile from '../test-data/simple-modify';
 
 describe('lines', () => {
     it('change-line', async () => {
@@ -59,5 +60,11 @@ describe('lines', () => {
         const buffer = await fs.readFile(path.resolve(__dirname, '..', 'test-data', 'simple-add-file.patch'));
 
         assert.deepEqual(parsePatch(buffer.toString()), simpleAddFile);
+    });
+
+    it('simple-modify', async () => {
+        const buffer = await fs.readFile(path.resolve(__dirname, '..', 'test-data', 'simple-modify.patch'));
+
+        assert.deepEqual(parsePatch(buffer.toString()), simpleModifyFile);
     });
 });
